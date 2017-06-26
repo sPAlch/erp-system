@@ -1,0 +1,26 @@
+{
+  "name": "erp-system",
+  "version": "1.0.0",
+  "description": "erp system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sPAlch/erp-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sPAlch/erp-system/issues"
+  },
+  "homepage": "https://github.com/sPAlch/erp-system#readme",
+  "devDependencies": {
+    "webpack": "^3.0.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
+  }
+}
