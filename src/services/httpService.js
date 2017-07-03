@@ -4,8 +4,8 @@ let $ = require("jquery");
 
 angular.module('erpProjApp')
     .factory('httpService', ['$http', '$q', '$location', function ($http, $q, $location) {
-        var baseUrl = "http://spalch.net/erpsystem",
-        //var baseUrl = "erpApi",
+        //var baseUrl = "http://spalch.net/erpsystem",
+        var baseUrl = "erpApi",
             serverApi = {
                 'getCustomerList': {
                     method: 'GET',

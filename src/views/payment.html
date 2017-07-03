@@ -1,0 +1,201 @@
+<div class="user" ng-init="init()">
+	<div class="main user-list" ng-if="viewMode === 0">
+        <h3>付款單</h3>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-xs-2">
+                    <div class="btn-group" dropdown is-open="payCondition.isOpen">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            {{pageSetting.payCondition.name}}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li bindonce ng-repeat="condition in payCondition.list">
+                                <a ng-click="setDataPayCondtiion(condition)">
+                                    {{ condition.name }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="label-text pull-left">廠商</div>
+                    <div class="col-xs-9">
+                        <div class="btn-group" dropdown is-open="vendorsData.isOpen">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                {{pageSetting.vendor.name}}
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a ng-click="setDataTargetVendor(vendorsData.defaultData)">
+                                        {{ vendorsData.defaultData.name }}
+                                    </a>
+                                </li>
+                                <li bindonce ng-repeat="vendor in vendorsData.list">
+                                    <a ng-click="setDataTargetVendor(vendor)">
+                                        {{ vendor.name }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="label-text pull-left">工單編號</div>
+                    <div class="col-xs-7">
+                        <input type="text" class="form-control" ng-model="pageSetting.ticketNo" type="number">
+                    </div>
+                    <div class="col-xs-2">
+                        <div class="btn-group btn-group-justified">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-primary" ng-click="searchData()">搜尋</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="label-text pull-left">
+                    {{pageSetting.totalCount}} 筆付款單
+                    <span ng-if="pageSetting.totalCount>0">，總金額：{{pageSetting.totalSum}}</span>
+                </div>
+                <span class="btn-group pull-right" dropdown is-open="pageSetting.perPageMenuOpen">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        每頁{{pageSetting.perPage}}筆 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li bindonce ng-repeat="num in pageSetting.perPageSet">
+                            <a ng-click="setItemsPerPage(num)">{{ num }}</a>
+                        </li>
+                    </ul>
+                </span>
+            </div>
+            <table class="table table-hover">
+                <colgroup>
+                    <col class="col-xs-2">
+                    <col class="col-xs-4">
+                    <col class="col-xs-2">
+                    <col class="col-xs-2">
+                    <col class="col-xs-2">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>編號</th>
+                        <th>廠商</th>
+                        <th>金額</th>
+                        <th>對帳</th>
+                        <th>發票</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="5" class='is-loading' ng-if="isLoading"><i class='fa fa-spinner fa-spin '></i></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class='is-loading' ng-if="!isLoading && payListData.length===0">
+                            <i class='fa fa-exclamation-triangle '></i>查無付款單資料！
+                        </td>
+                    </tr>
+                    <tr ng-repeat='pay in currentList track by $index'  ng-show="!isLoading">
+                        <td><a ng-click="editPay(pay,$index)">{{pay.ticket_no}} - {{pay.no}}</a></td>
+                        <td>{{pay.vendor.name}}</td>
+                        <td>{{pay.payment_total}}</td>
+                        <td>{{pay.pay_condition.name}}</td>
+                        <td>{{pay.invoice_condition.name}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-xs-12 text-center" ng-show="payListData.length>0">
+            <pagination first-text="&laquo;" previous-text="&lsaquo;" next-text="&rsaquo;" last-text="&raquo;" total-items="pageSetting.totalCount" ng-model="pageSetting.currentPage" items-per-page="pageSetting.perPage" max-size="pageSetting.maxPageSize" boundary-links="true" rotate="false" ng-change="getPageData(pageSetting.currentPage)"></pagination>
+        </div>
+    </div>
+    <div class="edit-content" ng-if="viewMode > 0">
+		<div class="edit-content-header">
+            <div class="container">
+                <h3><a ng-click="backToList()">付款單列表</a> >{{content.ticket_detail_no}} - {{content.no}}</h3>
+            </div>
+        </div>
+        <div class="edit-content-body" ng-class="{'is-wait': isLoading || isDeleting}">
+            <div class="form-row" ng-class="{'has-warning' : isDuplicate}">
+                <label class="col-xs-1">工單編號</label>
+                <div class="col-xs-3">
+                    <div class="input-group col-xs-12">
+                        <span class='form-control'>{{content.ticket_detail_no}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">廠商名稱</label>
+                <div class="col-xs-3">
+                    <div class="input-group col-xs-12">
+                        <span class='form-control'>{{content.vendor.name}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">金額</label>
+                <div class="col-xs-3">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" placeholder="" ng-model="content.payment_total">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">對帳</label>
+                <div class="col-xs-3">
+                    <div class="btn-group" dropdown is-open="payCondition.isOpen">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            {{content.pay_condition.name}}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li bindonce ng-repeat="condition in payCondition.list">
+                                <a ng-click="setCondtiion(condition)">
+                                    {{ condition.name }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">發票</label>
+                <div class="col-xs-3">
+                    <div class="btn-group" dropdown is-open="invoiceCondition.isOpen">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            {{content.invoice_condition.name}}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li bindonce ng-repeat="invoice in invoiceCondition.list">
+                                <a ng-click="setInvoice(invoice)">
+                                    {{ invoice.name }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>        
+                <label class="col-xs-1">付款條件</label>
+                <div class="col-xs-7">
+                    <div class="input-group col-xs-12">
+                        <textarea class="form-control" placeholder="" ng-model="content.statement"></textarea>
+                    </div>
+                </div>
+        </div>
+        <div class="edit-content-footer">
+            <div class="container">
+                <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-primary" ng-click="savePay()" ng-if="viewMode === 1" ng-disabled="isLoading"=>
+                        <i class='fa fa-spinner fa-spin' ng-if="isLoading"></i>更新
+                    </button>
+                    <button type="button" class="btn btn-default" ng-click="backToList()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

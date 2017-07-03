@@ -28,7 +28,8 @@ module.exports = {
     },
     devServer: {
         inline: true,
-        port: 8008,
+        public:'0.0.0.0:3000',
+        port: 3000,
     },
     module: {
       rules: [

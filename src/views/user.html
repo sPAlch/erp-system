@@ -1,0 +1,173 @@
+<div class="user" ng-init="init()">
+	<div class="user-list" ng-if="viewMode === 0">
+        <h3>使用者列表</h3>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <button type="button" class="btn btn-primary" ng-click="addUser()">
+                    <i class="fa fa-plus" aria-hidden="true"></i> 新增使用者
+                </button>
+            </div>
+            <table class="table table-hover">
+                <colgroup>
+                    <col class="col-xs-1">
+                    <col class="col-xs-3">
+                    <col class="col-xs-3">
+                    <col class="col-xs-2">
+                    <col class="col-xs-3">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>編號</th>
+                        <th>帳號</th>
+                        <th>名稱</th>
+                        <th>類別</th>
+                        <th>建立時間</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="5" class='is-loading' ng-if="isLoading"><i class='fa fa-spinner fa-spin '></i></td>
+                    </tr>
+                    <tr ng-repeat='user in userData track by $index' ng-show="!isLoading">
+                        <td>{{user.no}}</td>
+                        <td><a ng-click="editUser(user)">{{user.name}}</a></td>
+                        <td>{{user.display_name}}</td>
+                        <td>{{user.cat.label}}</td>
+                        <td>{{(user.createtime*1000|date:'yyyy-MM-dd')}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="edit-content" ng-if="viewMode > 0">
+		<div class="edit-content-header">
+            <div class="container">
+                <h3 class="col-xs-7"><a ng-click="backToList()">使用者列表</a> > {{selectedUser.display_name}}</h3>
+            </div>
+        </div>
+        <div class="edit-content-body" ng-class="{'is-wait': isLoading || isDeleting}">
+            <div class="form-row">
+                <label class="col-xs-1">帳號</label>
+                <div class="col-xs-4">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" placeholder="" ng-model="selectedUser.name">
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <label class="label-text">類別</label>
+                    <div class="btn-group" dropdown is-open="userCategory.isOpen">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-click="openMenu($event)">
+                            {{selectedUser.cat.label}}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li bindonce ng-repeat="cat in userCategory.list">
+                                <a ng-click="setCat(cat)">
+                                    {{ cat.label }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">顯示名稱</label>
+                <div class="col-xs-4">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" placeholder="" ng-model="selectedUser.display_name">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row" ng-if="viewMode === 2" ng-class="{'has-warning' : isPasswordEmpty}">
+                <label class="col-xs-1">密碼</label>
+                <div class="col-xs-4">
+                    <div class="input-group col-xs-12">
+                        <input type="password" class="form-control" placeholder="" ng-model="selectedUser.password">
+                    </div>
+                </div>
+                <div class="col-xs-7 form-notice-msg text-warning" ng-if="isPasswordEmpty">
+                    ＊請輸入密碼！
+                </div>
+            </div>
+            <div class="form-row" ng-if="viewMode === 2">
+                <label class="col-xs-1">密碼確認</label>
+                <div class="col-xs-4">
+                    <div class="input-group col-xs-12">
+                        <input type="password" class="form-control" placeholder="" ng-model="selectedUser.passwordConfirm">
+                    </div>
+                </div>
+                <div class="col-xs-7 form-notice-msg text-primary" 
+                    ng-class="{'text-primary': selectedUser.password === selectedUser.passwordConfirm, 'text-warning': selectedUser.password !== selectedUser.passwordConfirm}"
+                    ng-if="selectedUser.password !=='' && selectedUser.passwordConfirm !=='' ">
+                    <i class="fa" aria-hidden="true" ng-class="{'fa-check': selectedUser.password === selectedUser.passwordConfirm, 'fa-times': selectedUser.password !== selectedUser.passwordConfirm}"></i>
+                    <span ng-if="selectedUser.password !== selectedUser.passwordConfirm">密碼確認不符！</span>
+                    <span ng-if="selectedUser.password === selectedUser.passwordConfirm">密碼確認相符！</span>
+                </div>
+            </div>
+            <hr ng-if="viewMode === 1" />
+            <div class="form-row" ng-show="viewMode === 1">
+                <div class="input-group col-xs-12">
+                    <input type="checkbox" ng-model="changePassword">
+                    修改密碼
+                </div>
+            </div>
+            <div ng-if="viewMode === 1 && changePassword">
+            <div class="form-row" ng-class="{'has-warning' : isPasswordEmpty}">
+                    <label class="col-xs-1">新密碼</label>
+                    <div class="col-xs-4">
+                        <div class="input-group col-xs-12">
+                            <input type="password" class="form-control" placeholder="" ng-model="selectedUser.newPassword">
+                        </div>
+                    </div>
+                    <div class="col-xs-7 form-notice-msg text-warning" ng-if="isPasswordEmpty">
+                        ＊請輸入密碼！
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label class="col-xs-1">密碼確認</label>
+                    <div class="col-xs-4">
+                        <div class="input-group col-xs-12">
+                            <input type="password" class="form-control" placeholder="" ng-model="selectedUser.passwordConfirm">
+                        </div>
+                    </div>
+                    <div class="col-xs-7 form-notice-msg text-primary" 
+                        ng-class="{'text-primary': selectedUser.newPassword === selectedUser.passwordConfirm, 'text-warning': selectedUser.newPassword !== selectedUser.passwordConfirm}"
+                        ng-if="selectedUser.newPassword !=='' && selectedUser.passwordConfirm !=='' ">
+                        <i class="fa" aria-hidden="true" ng-class="{'fa-check': selectedUser.newPassword === selectedUser.passwordConfirm, 'fa-times': selectedUser.newPassword !== selectedUser.passwordConfirm}"></i>
+                        <span ng-if="selectedUser.newPassword !== selectedUser.passwordConfirm">密碼確認不符！</span>
+                        <span ng-if="selectedUser.newPassword === selectedUser.passwordConfirm">密碼確認相符！</span>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div class="form-row">
+                <label class="col-xs-1">備註</label>
+                <div class="col-xs-7">
+                    <div class="input-group col-xs-12">
+                        <textarea class="form-control" placeholder="" ng-model="selectedUser.remark"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="edit-content-footer">
+            <div class="container">
+                <div class="btn-group pull-left">
+                    <button type="button" class="btn btn-danger" ng-click="deleteUser()" ng-if="viewMode === 1" ng-disabled="isLoading || isDeleting || selectedUser.no==='1'">
+                        <i class='fa fa-spinner fa-spin' ng-if="isDeleting"></i>刪除
+                    </button>
+                </div>
+                <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-primary" ng-click="saveUser()" ng-if="viewMode === 1" ng-disabled="isLoading || isDeleting">
+                        <i class='fa fa-spinner fa-spin' ng-if="isLoading"></i>更新
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-click="saveUser()" ng-if="viewMode === 2" ng-disabled="isLoading || isDeleting">
+                        <i class='fa fa-spinner fa-spin' ng-if="isLoading"></i>新增
+                    </button>
+                    <button type="button" class="btn btn-default" ng-click="backToList()" ng-disabled="isLoading || isDeleting">
+                        取消
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

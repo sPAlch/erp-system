@@ -11,6 +11,7 @@ import ngAnimate from 'angular-animate'
 import accordion from 'angular-ui-bootstrap/src/accordion';
 import datepicker from 'angular-ui-bootstrap/src/datepicker';
 import dropdown from 'angular-ui-bootstrap/src/dropdown';
+import modal from 'angular-ui-bootstrap/src/modal';
 
 
 angular
@@ -21,24 +22,50 @@ angular
 	accordion,
 	datepicker,
 	dropdown,
+	modal,
     'ui.bootstrap',
     'ngStorage'
   ])
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/', {
-		template: require('./views/job.html'),
-        controller: 'JobCtrl',
-        controllerAs: 'job'
-      })
-      .when('/login', {
-		template: require('./views/login.html'),
-        controller: 'LoginCtrl',
-        controllerAs: 'login'
-      })
-      .otherwise({
-        redirectTo: '/'
-      });
+		.when('/', {
+			template: require('./views/job.html'),
+	        controller: 'JobCtrl',
+	        controllerAs: 'job'
+		})
+		.when('/login', {
+			template: require('./views/login.html'),
+	        controller: 'LoginCtrl',
+	        controllerAs: 'login'
+		})
+		.when('/users', {
+			template: require('./views/user.html'),
+	        controller: 'UserCtrl',
+	        controllerAs: 'user'
+		})
+		.when('/vendors', {
+			template: require('./views/vendors.html'),
+	        controller: 'VendorsCtrl',
+	        controllerAs: 'vendors'
+		})
+	  	.when('/customer', {
+			template: require('./views/customer.html'),
+	        controller: 'CustomerCtrl',
+	        controllerAs: 'vendors'
+		})
+	  	.when('/payment', {
+			template: require('./views/payment.html'),
+	        controller: 'PaymentCtrl',
+	        controllerAs: 'payment'
+		})
+	  	.when('/bill', {
+			template: require('./views/bill.html'),
+	        controller: 'BillCtrl',
+	        controllerAs: 'bill'
+		})
+	    .otherwise({
+    	    redirectTo: '/'
+      	});
   });
 
 require('./controllers');

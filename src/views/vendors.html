@@ -1,0 +1,239 @@
+<div class="user" ng-init="init()">
+	<div class="user-list" ng-if="viewMode === 0">
+        <h3>廠商列表</h3>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <button type="button" class="btn btn-primary" ng-click="addVendor()">
+                    <i class="fa fa-plus" aria-hidden="true"></i> 新增廠商
+                </button>
+            </div>
+            <table class="table table-hover">
+                <colgroup>
+                    <col class="col-xs-1">
+                    <col class="col-xs-2">
+                    <col class="col-xs-1">
+                    <col class="col-xs-2">
+                    <col class="col-xs-6">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>編號</th>
+                        <th>廠商名稱</th>
+                        <th>負責人</th>
+                        <th>電話</th>
+                        <th>地址</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="5" class='is-loading' ng-if="isLoading"><i class='fa fa-spinner fa-spin '></i></td>
+                    </tr>
+                    <tr ng-repeat='vendor in vendorsData track by $index'  ng-show="!isLoading">
+                        <td>{{vendor.number}}</td>
+                        <td><a ng-click="editVendor(vendor,$index)">{{vendor.name}}</a></td>
+                        <td>{{vendor.owner}}</td>
+                        <td>{{vendor.contact_tel}}</td>
+                        <td>{{vendor.address}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="edit-content" ng-if="viewMode > 0">
+		<div class="edit-content-header">
+            <div class="container">
+                <h3><a ng-click="backToList()">廠商列表</a> > {{content.name}}</h3>
+            </div>
+        </div>
+        <div class="edit-content-body" ng-class="{'is-wait': isLoading || isDeleting}">
+            <div class="form-row" ng-class="{'has-warning' : isDuplicate}">
+                <label class="col-xs-1">編號</label>
+                <div class="col-xs-3">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" placeholder="" ng-model="content.number">
+                    </div>
+                </div>
+                <div class="col-xs-8 form-notice-msg text-warning" ng-if="isDuplicate">
+                    ＊編號重複！
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">廠商名稱</label>
+                <div class="col-xs-3">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" placeholder="" ng-model="content.name">
+                    </div>
+                </div>
+                <label class="col-xs-1">負責人</label>
+                <div class="col-xs-3">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" placeholder="" ng-model="content.owner">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">全名</label>
+                <div class="col-xs-3">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" placeholder="" ng-model="content.full_name">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">統編</label>
+                <div class="col-xs-3">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" placeholder="" ng-model="content.receipt">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">成立時間</label>
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="content.established_time" is-open="datePicker.isOpen" ng-required="false"  close-text="Close" min-date="1970-01-01" datepicker-options="{showWeeks: false}"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openDatePicker($event)">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">設立地址</label>
+                <div class="col-xs-11">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" placeholder="" ng-model="content.established_address">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">通訊地址</label>
+                <div class="col-xs-11">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" placeholder="" ng-model="content.mailing_address">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">類別</label>
+                <div class="col-xs-11">
+                    <div class="input-group form-control check-column-row col-xs-11">
+                        <span ng-repeat="type in selectedVendorsType track by $index" class="check-column">
+                            <input type="checkbox" ng-model="type.checked">{{type.name}}</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <h4>聯絡人資訊</h4>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="form-row">
+                        <label class="col-xs-1">姓名</label>
+                        <div class="col-xs-3">
+                            <div class="input-group col-xs-12">
+                                <input type="text" class="form-control" placeholder="" ng-model="content.contact_name">
+                            </div>
+                        </div>
+                        <label class="col-xs-1">職稱</label>
+                        <div class="col-xs-3">
+                            <div class="input-group col-xs-12">
+                                <input type="text" class="form-control" placeholder="" ng-model="content.contact_job_title">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label class="col-xs-1">市話</label>
+                        <div class="col-xs-3">
+                            <div class="input-group col-xs-12">
+                                <input type="text" class="form-control" placeholder="" ng-model="content.contact_tel">
+                            </div>
+                        </div>
+                        <label class="col-xs-1">手機</label>
+                        <div class="col-xs-3">
+                            <div class="input-group col-xs-12">
+                                <input type="text" class="form-control" placeholder="" ng-model="content.contact_mobile">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label class="col-xs-1">E-mail</label>
+                        <div class="col-xs-3">
+                            <div class="input-group col-xs-12">
+                                <input type="text" class="form-control" placeholder="" ng-model="content.contact_email">
+                            </div>
+                        </div>
+                        <label class="col-xs-1">傳真</label>
+                        <div class="col-xs-3">
+                            <div class="input-group col-xs-12">
+                                <input type="text" class="form-control" placeholder="" ng-model="content.contact_fax">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <h4>付款資訊</h4>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="form-row">
+                        <label class="col-xs-1">付款銀行</label>
+                        <div class="col-xs-3">
+                            <div class="input-group col-xs-12">
+                                <input type="text" class="form-control" placeholder="" ng-model="content.bank">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label class="col-xs-1">付款帳號</label>
+                        <div class="col-xs-3">
+                            <div class="input-group col-xs-12">
+                                <input type="text" class="form-control" placeholder="" ng-model="content.bank_account">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label class="col-xs-1">課稅別</label>
+                        <div class="col-xs-3">
+                            <div class="input-group form-control check-column-row col-xs-12">
+                                <input type="radio" ng-model="content.tax" value='1'> 應稅 
+                                <input type="radio" ng-model="content.tax" value='2'> 不計稅 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div class="form-group">
+                <label class="col-xs-1">備註</label>
+                <div class="col-xs-7">
+                    <div class="input-group col-xs-12">
+                        <textarea class="form-control" placeholder="" ng-model="content.remark"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="edit-content-footer">
+            <div class="container">
+                <div class="btn-group pull-left">
+                    <button type="button" class="btn btn-danger" ng-click="deleteVendor()" ng-if="viewMode === 1" ng-disabled="isLoading">
+                        <i class='fa fa-spinner fa-spin' ng-if="isDeleting"></i>刪除
+                    </button>
+                </div>
+                <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-primary" ng-click="saveVendor()" ng-if="viewMode === 1" ng-disabled="isLoading"=>
+                        <i class='fa fa-spinner fa-spin' ng-if="isLoading"></i>更新
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-click="saveVendor()" ng-if="viewMode === 2" ng-disabled="isLoading">
+                        <i class='fa fa-spinner fa-spin' ng-if="isLoading"></i>新增
+                    </button>
+                    <button type="button" class="btn btn-default" ng-click="backToList()">
+                        取消
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
