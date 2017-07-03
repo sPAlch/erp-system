@@ -1,0 +1,29 @@
+.job-column{
+  padding:10px 0px;
+  margin-bottom:10px;
+
+  .panel{
+    clear: both;
+  }
+  label{
+    &.btn{
+      padding:6px 12px;
+      &:after{content: '';}
+      input{
+        &[type=checkbox]{
+          display: none;
+        }
+      }
+    }
+  }
+  .unit-list{
+    display: block;
+  }
+  .form-group{
+    &:after{
+      content:'';
+      clear: both;
+      display: block;
+    }
+  }
+}

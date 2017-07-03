@@ -1,0 +1,185 @@
+#game-stage{
+  width:100%;
+  height:100%;
+  padding:50px 0px 36px 0px;
+  background: #000;
+  position: fixed;
+  top:0px;  
+  left:0px;
+
+  .img-loader{
+    width: 100%;
+    height:100%;
+    background: rgba(0,0,0,0.5);
+    position: absolute;
+    top:0px;
+    left:0px;
+
+    .img-container{
+      img{
+        display: none;
+      }      
+    }
+    .loader-bar{
+
+        width:40%;
+        height:48px;
+        margin:0px auto;
+        position: relative;
+        top:40%;
+
+        .bar{
+          width: 1px;
+          height:2px;
+          background: rgba(180,180,180,0.8);
+        }
+        .txt{
+          width: 100%;
+          padding:20px 0px;
+          text-align: center;
+          font-size:24px;
+          color:#fff;          
+        }
+
+    }
+
+  }
+
+  .game-scenes{
+    width:1080px;
+    height:720px;
+    margin: 0px auto;
+    position: absolute;
+
+    .game-bg{
+      width:100%;
+      height:100%;    
+      background-size:cover; 
+    }
+    .actor-pics{
+      position: absolute;
+      bottom:0px;
+    }
+    .actor-left{
+      left:0px;      
+    }
+    .actor-right{
+      right:0px;      
+    }
+    .event-stage{
+      width:800px;
+      height:600px;
+      position: absolute;
+      background: rgba(0,0,0,0.5);
+      top:60px;
+      left:140px;
+      overflow: hidden;
+
+      .event-actor{
+        position: absolute;
+        bottom:0px;
+      }
+    }
+    .msg-stage{
+      width:800px;
+      height:240px;
+      position: absolute;
+      background: rgba(0,0,0,0.5);
+      top:240px;
+      left:140px;
+      overflow: hidden;
+      color:#fff;
+      padding: 50px;
+
+      .actor-name{
+        font-size:21px;
+      }
+
+      p{
+        font-size:18px;
+        padding:0px 30px;
+      }
+      .btn-next{
+        position: absolute;
+        right:30px;
+        bottom:30px;
+      }
+
+    }
+    .option-stage{
+
+      width:800px;
+      height:480px;
+      position: absolute;
+      background: rgba(0,0,0,0.5);
+      top:120px;
+      left:140px;
+      overflow: hidden;
+      color:#fff;
+      padding: 50px;
+
+      .option-description{
+        font-size:21px;
+      }
+      ul{
+        padding:0px;
+        li{
+          width:100%;
+          padding:10px;
+          font-size:21px;
+          cursor: pointer;
+          list-style: decimal inside;
+
+          &:hover{
+            background: rgba(90,90,90,0.5);
+          }
+        }
+      }
+
+    }
+    .btn-next{
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+
+      &:hover{
+        color: #08f;
+      }
+      &:focus{
+        border: none;
+        outline: none;
+      }
+
+    }
+
+    .actor-dialog{
+      width:100%;
+      height:180px;
+      padding:15px 30px;
+      position:absolute;
+      bottom:0px;
+      left:0px;
+      background: rgba(0,0,0,0.8);
+      color:#fff;
+
+      .actor-name{
+        font-size:21px;
+      }
+
+      p{
+        font-size:18px;
+        padding:0px 30px;
+      }
+
+      .btn-next{
+        position: absolute;
+        right:30px;
+        bottom:30px;
+      }
+    }
+
+  }
+
+}

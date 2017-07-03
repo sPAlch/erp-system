@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="#/">享藝有限公司</a>
+  </div>
+  <div class="collapse navbar-collapse" id="js-navbar-collapse">
+    <ul class="nav navbar-nav">
+      <li ng-repeat="nav in navMenu track by $index" ng-class="{'active' : nav.isActive}">
+        <a href='#/{{nav.route}}' ng-click="activeNav(nav)">{{nav.name}}</a>
+      </li>
+    </ul>
+    
+    <div class="dropdown pull-right" uib-dropdown>
+      <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" uib-dropdown-toggle>
+        {{$localStorage.erpUser}}
+      </button>
+      <span class="caret"></span></button>
+      <ul class="dropdown-menu" uib-dropdown-menu>
+        <li><a href="#" ng-click="userLogout()">登出</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

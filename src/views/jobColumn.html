@@ -1,0 +1,167 @@
+<div class="job-column">
+    <div class="panel panel-default">
+        <table class="table table-hover">
+            <caption class="row">
+                <div class="col-xs-10">{{jobDivision.label}}</div>
+                <div class="col-xs-2 text-right">
+                    <i class="fa fa-usd" aria-hidden="true"></i> {{countTotalCost()}}
+                </div>
+            </caption>
+            <colgroup>
+                <col class="col-xs-1">
+                <col class="col-xs-2">
+                <col class="col-xs-3">
+                <col class="col-xs-4">
+                <col class="col-xs-1">
+                <col class="col-xs-1">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>類別</th>
+                    <th>廠商<span ng-if="jobDivision.type===0">及版號</span></th>
+                    <th>品項及內容</th>
+                    <th>尺寸及數量</th>
+                    <th>下一站</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="singleDivision in jobDivision.list">
+                    <td>
+                        <div ng-if="jobDivision.subType.length===1">{{singleDivision.subType.name}}</div>
+                        <div class="btn-group" dropdown is-open="singleDivision.menuOpen.subType" ng-if="jobDivision.subType.length>1">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                {{singleDivision.subType.name}} <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li bindonce ng-repeat="subType in jobDivision.subType">
+                                    <a ng-click="setSubType(subType,singleDivision)">{{ subType.name }}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-row">
+                            <div class="btn-group" dropdown is-open="singleDivision.menuOpen.company">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    {{singleDivision.company.name}} <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li bindonce ng-repeat="company in companyCatList[jobDivision.type][singleDivision.subType.id]">
+                                        <a ng-click="setCompany(company,singleDivision)">{{ company.name }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div ng-if="singleDivision.company.phone">
+                                <i class="fa fa-phone" aria-hidden="true"></i> : 
+                                {{singleDivision.company.phone}}
+                            </div>
+                            <div class="form-notice-msg text-warning" ng-if="companyCatList[jobDivision.type][singleDivision.subType.id].length<2">
+                                ＊此類別無對應廠商
+                            </div>
+                        </div>
+                        <div class="form-row" ng-if="jobDivision.type===0">
+                            <label class="col-xs-4">版號</label>
+                            <div class="input-group col-xs-8">
+                                <input type="text" class="form-control" placeholder="" ng-model="singleDivision.versionNo">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-row">
+                            <label class="col-xs-3">名稱</label>
+                            <div class="input-group col-xs-9">
+                                <input type="text" class="form-control" placeholder="" ng-model="singleDivision.title">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-xs-3">內容</label>
+                            <div class="input-group col-xs-9">
+                                <input type="text" class="form-control" placeholder="" ng-model="singleDivision.content">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-xs-3">尺寸</label>
+                            <div class="input-group col-xs-9">
+                                <input type="text" class="form-control" placeholder="" ng-model="singleDivision.spec">
+                            </div>
+                        </div>
+                    </td>
+                    <td class="align-top">
+                        <div class="form-row">
+                            <label class="col-xs-2">數量</label>
+                            <div class="input-group col-xs-4 pull-left">
+                                <input type="number" class="form-control" placeholder="" ng-model="singleDivision.quantity.total">
+                            </div>
+                            <div class="input-group col-xs-6 pull-left">
+                                <div class="input-group col-xs-4 pull-left">
+                                    <input type="text" class="form-control" ng-model="singleDivision.unit.name" ng-disabled="!singleDivision.unit.edit"> 
+                                    <ul class="dropdown-menu unit-list" ng-show="singleDivision.unit.edit">
+                                        <li bindonce ng-repeat="unit in unitList">
+                                            <a ng-click="setUnit(unit,singleDivision)">{{ unit.unit }}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <label class="btn btn-default">
+                                    <i class="fa fa-pencil" aria-hidden="true" ng-class="{false:'fa-pencil',true:'fa-check'}[singleDivision.unit.edit]"></i>
+                                    <input type="checkbox" ng-model="singleDivision.unit.edit" ng-change="checkUnit(singleDivision)"> 
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-xs-2">放損</label>
+                            <div class="input-group col-xs-4 pull-left">
+                                <input type="number" class="form-control" ng-model="singleDivision.quantity.loss">
+                            </div>
+                            <label class="col-xs-2">單價</label>
+                            <div class="input-group col-xs-4 pull-left">
+                                <input type="number" class="form-control" ng-model="singleDivision.price.unit">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-xs-2">小計</label>
+                            <div class="input-group col-xs-5 pull-left total-price">
+                                <input ng-disabled="!singleDivision.price.edit" type="number" class="form-control" ng-model="singleDivision.price.total">
+                            </div>
+                            <div class="input-group col-xs-5 pull-left">
+                                <label class="btn btn-default">
+                                    <i class="fa fa-pencil" aria-hidden="true" ng-class="{false:'fa-pencil',true:'fa-calculator'}[countTotal(singleDivision)]"></i>
+                                    <input type="checkbox" ng-model="singleDivision.price.edit"> 
+                                </label>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="btn-group" dropdown is-open="singleDivision.menuOpen.selectedCompany">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-class="{'btn-danger':!checkSelectedCompany(singleDivision.nextStep)}">
+                                {{singleDivision.nextStep.name}}
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li bindonce ng-repeat="selectedCompany in companySelectedList">
+                                    <a ng-click="setNextCompany(selectedCompany,singleDivision)" ng-disabled="selectedCompany.id===singleDivision.company.id">
+                                        {{ selectedCompany.name }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-default" ng-click="addDivision()">
+            新增{{jobDivision.label}}項目
+        </button>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-1">備註</label>
+        <div class="col-xs-7">
+            <div class="input-group col-xs-12">
+                <textarea class="form-control" placeholder="" ng-model="jobDivision.note"></textarea>
+            </div>
+        </div>
+    </div>
+</div>

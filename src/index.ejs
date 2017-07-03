@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body ng-app="erpProjApp">
+    <!--[if lte IE 8]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <!-- Add your site or application content here -->
+    <div class="header">
+      <div class="navbar navbar-default" role="navigation">
+        <top-navbar></top-navbar>
+      </div>
+    </div>
+    <div class="container">
+      <div ng-view=""></div>
+    </div>
+    <div class="footer">
+      <div class="container text-center">
+        Copyright © 2016,  All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>

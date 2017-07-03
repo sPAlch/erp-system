@@ -1,0 +1,154 @@
+<div class="job-edit-content">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="form-row">
+                <label class="col-xs-1">專案名稱</label>
+                <div class="col-xs-7">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" placeholder="" ng-model="content.name">
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <label class="label-text">客戶</label>
+                    <div class="btn-group" dropdown is-open="jobOption.customer.isOpen">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            {{content.jobOption.customer.name}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li bindonce ng-repeat="customer in customerList">
+                                <a ng-click="setJobOption(customer,'customer')">{{ customer.name }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <label class="label-text">業務</label>
+                    <div class="btn-group" dropdown is-open="jobOption.sales.isOpen">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            {{content.jobOption.sales.name}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li bindonce ng-repeat="sales in salesList">
+                                <a ng-click="setJobOption(sales,'sales')">{{ sales.name }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">交貨日</label>
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="content.delivery_date" is-open="deadlineDatePickerOpen" ng-required="false" close-text="Close" min-date="{{(content.createtime|date:'yyyy-MM-dd')}}" datepicker-jobOptions="{showWeeks: false}"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="jobDatePicker($event)">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <label class="label-text">狀態</label>
+                    <div class="btn-group" dropdown is-open="jobOption.status.isOpen">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            {{content.jobOption.status.name}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li bindonce ng-repeat="status in jobOption.status.list">
+                                <a ng-click="setJobOption(status,'status')">{{ status.name }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">規格</label>
+                <div class="col-xs-4">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" placeholder="" ng-model="content.format">
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <label class="col-xs-4">數量</label>
+                    <div class="input-group col-xs-8">
+                        <input type="number" class="form-control" placeholder="" ng-model="content.amount">
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <label class="col-xs-4">單價</label>
+                    <div class="input-group col-xs-8">
+                        <input type="number" class="form-control" placeholder="" ng-model="content.price.unit">
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <label class="col-xs-4">總計</label>
+                    <div class="input-group col-xs-8">
+                        <div class="input-group col-xs-8 pull-left total-price">
+                            <input ng-disabled="!content.price.edit" type="number" class="form-control" ng-model="content.price.total">
+                        </div>
+                        <div class="input-group col-xs-4 pull-left">
+                            <label class="btn btn-default">
+                                <i class="fa fa-pencil" aria-hidden="true" ng-class="{false:'fa-pencil',true:'fa-calculator'}[countTotal(content)]"></i>
+                                <input type="checkbox" ng-model="content.price.edit"> 
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">印刷版本</label>
+                <div class="col-xs-5">
+                    <div class="btn-group pull-left" dropdown is-open="jobOption.printVer.isOpen">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            {{content.jobOption.printVer.name}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li bindonce ng-repeat="printVer in jobOption.printVer.list">
+                                <a ng-click="setJobOption(printVer,'printVer')">{{ printVer.name }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pull-left" ng-show="selectedJob.jobjobOption.printVer.id===2">
+                        <div class="input-group col-xs-12">
+                            <input type="text" class="form-control" placeholder="" ng-model="selectedJob.printVerOther">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <label class="label-text">印刷樣</label>
+                    <div class="btn-group" dropdown is-open="jobOption.printType.isOpen">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            {{content.jobOption.printType.name}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li bindonce ng-repeat="printType in jobOption.printType.list">
+                                <a ng-click="setJobOption(printType,'printType')">{{ printType.name }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <label class="label-text">樣刷對色</label>
+                    <div class="btn-group" dropdown is-open="jobOption.printColor.isOpen">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            {{content.jobOption.printColor.name}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li bindonce ng-repeat="printColor in jobOption.printColor.list">
+                                <a ng-click="setJobOption(printColor,'printColor')">{{ printColor.name }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-xs-1">進度</label>
+                <div class="col-xs-7">
+                    <div class="input-group col-xs-12">
+                        <textarea class="form-control" placeholder="" ng-model="content.schedule"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

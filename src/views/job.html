@@ -1,0 +1,181 @@
+<div class="main" ng-init="init()">
+    <div class="job-list" ng-show="viewMode===0">
+        <h3>工單列表</h3>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-xs-5">
+                    <div class="label-text pull-left">時間範圍</div>
+                    <div class="col-xs-5">
+                        <div class="input-group">
+                            <input type="text" class="form-control" uib-datepicker-popup="yyyy-MM-dd" ng-model="searchRange.startDate" is-open="searchRange.startDatePickerOpen" ng-required="false" close-text="Close" min-date="1970-01-01" datepicker-options="{showWeeks: false}"/>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openDatePicker($event,0)">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="label-text pull-left">-</div>
+                    <div class="col-xs-5">
+                        <div class="input-group">
+                            <input type="text" class="form-control" uib-datepicker-popup="yyyy-MM-dd" ng-model="searchRange.endDate" is-open="searchRange.endDateDatePickerOpen" ng-required="false" close-text="Close" min-date="1970-01-01" datepicker-options="{showWeeks: false}"/>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openDatePicker($event,1)">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-7">
+                    <div class="label-text pull-left">關鍵字</div>
+                    <div class="col-xs-9">
+                        <div class="input-group">
+                            <div class="input-group-btn" uib-dropdown is-open="searchRange.keyWordTypeMenuOpen">
+                                <button type="button" class="btn btn-default" uib-dropdown-toggle>
+                                    {{searchRange.selectKeyWordType.label}} <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" uib-dropdown-menu>
+                                    <li bindonce ng-repeat="type in searchRange.keyWordType">
+                                        <a ng-click="setKeyWordType(type)">{{ type.label }}</a>
+                                    </li>
+                                </ul>
+                            </div><!-- /btn-group -->
+                            <input type="text" class="form-control" ng-model="searchRange.keyWordVal" ng-show="searchRange.selectKeyWordType.val!=='customer'">
+                            <div class="btn-group" ng-show="searchRange.selectKeyWordType.val==='customer'" uib-dropdown is-open="jobOption.customer.isOpen">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    {{searchRange.selectedCustomer.name}} <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li bindonce ng-repeat="customer in customerData">
+                                        <a ng-click="setSelectedCustomer(customer)">{{ customer.name }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <div class="btn-group btn-group-justified">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-primary" ng-click="searchTickets()">搜尋</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <button type="button" class="btn btn-primary" ng-click="addNewJob()">
+                    <i class="fa fa-plus" aria-hidden="true"></i> 新增工單
+                </button>
+                <span class="btn-group pull-right" uib-dropdown is-open="pageSetting.perPageMenuOpen">
+                    <button type="button" class="btn btn-default" uib-dropdown-toggle >
+                        每頁{{pageSetting.perPage}}筆 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+                        <li bindonce ng-repeat="num in pageSetting.perPageSet">
+                            <a ng-click="setItemsPerPage(num)">{{ num }}</a>
+                        </li>
+                    </ul>
+                </span>
+            </div>
+            <table class="table table-hover">
+                <colgroup>
+                    <col class="col-xs-1">
+                    <col class="col-xs-2">
+                    <col class="col-xs-1">
+                    <col class="col-xs-1">
+                    <col class="col-xs-1">
+                    <col class="col-xs-1">
+                    <col class="col-xs-1">
+                    <col class="col-xs-1">
+                    <col class="col-xs-3">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>編號</th>
+                        <th>名稱</th>
+                        <th>客戶</th>
+                        <th>業務</th>
+                        <th>數量</th>
+                        <th>總價</th>
+                        <th>開單日</th>
+                        <th>交貨日</th>
+                        <th>進度</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="9" class='is-loading' ng-if="isLoading"><i class='fa fa-spinner fa-spin '></i></td>
+                    </tr>
+                    <tr>
+                        <td colspan="9" class='is-loading' ng-if="!isLoading && jobList.length===0">
+                            <i class='fa fa-exclamation-triangle '></i>查無工單資料！
+                        </td>
+                    </tr>
+                    <tr ng-repeat='job in currentList track by $index' ng-if="!isLoading">
+                        <td>{{job.no}}</td>
+                        <td><a ng-click="viewJob(job,$index)">{{job.name}}</a></td>
+                        <td>{{job.jobOption.customer.name}}</td>
+                        <td>{{job.jobOption.sales.name}}</td>
+                        <td>{{job.amount}}</td>
+                        <td>{{job.total_price}}</td>
+                        <td>{{(job.createtime|date:'yyyy-MM-dd')}}</td>
+                        <td>{{(job.delivery_date|date:'yyyy-MM-dd')}}</td>
+                        <td>{{job.schedule}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-xs-12 text-center" ng-show="jobList.length>0">
+            <pagination first-text="&laquo;" previous-text="&lsaquo;" next-text="&rsaquo;" last-text="&raquo;" total-items="pageSetting.totalCount" ng-model="pageSetting.currentPage" items-per-page="pageSetting.perPage" max-size="pageSetting.maxPageSize" boundary-links="true" rotate="false" ng-change="getPageData(pageSetting.currentPage)"></pagination>
+        </div>
+    </div>
+    <div class="job-content edit-content"  ng-show="viewMode>0">
+        <div class="edit-content-body" ng-class="{'is-wait': isLoading || isDeleting}">
+            <div class="job-content-header">
+                <div class="container">
+                    <h3 class="col-xs-7"><a ng-click="backToList()">工單列表</a> > {{selectedData.title}}</h3>
+                    <div class="job-cost-summary col-xs-5">
+                        <div class="col-xs-6">
+                            <label>工單報價</label>{{jobContent.price.total}}
+                        </div>
+                        <div class="cost-deatil col-xs-6">
+                            <label>工單成本</label>{{countCost()}}
+                            <button type="button" class="btn btn-default" ng-click="showCostDetailList()">
+                                <i class="fa fa-angle-down" aria-hidden="true" ng-class="{true:'fa-angle-up',false:'fa-angle-down'}[costDetailList]"></i>
+                            </button>
+                            <ul class="cost-deatil-list" ng-show="costDetailList">
+                                <li ng-repeat="singleDivision in jobDivision">
+                                    <label>{{singleDivision.label}}</label>{{singleDivision.totalCost}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="job-content-body">
+                <div class="edit-mode" ng-if="viewMode===2 || viewMode===1">
+                    <job-content content="jobContent" sales-list="salesList" customer-list="customerData" job-option="jobOption"></job-content>
+                    <job-column ng-repeat="singleDivision in jobDivision" job-division="singleDivision" company-list="companyList" company-selected-list="companySelectedList" unit-list="unitList" company-cat-list="companyCatList"></job-column>
+                </div>
+            </div>
+        </div>
+        <div class="job-content-footer">
+            <div class="container">
+                <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-primary" ng-click="saveJob()" ng-if="viewMode===2">
+                        <i class='fa fa-spinner fa-spin' ng-if="isLoading"></i>更新
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-click="saveJob()" ng-if="viewMode===1">
+                        <i class='fa fa-spinner fa-spin' ng-if="isLoading"></i>新增
+                    </button>
+                    <button type="button" class="btn btn-default" ng-click="cancel()">
+                        取消
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

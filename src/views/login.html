@@ -1,0 +1,29 @@
+<div class="main login-page" ng-init="init()">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="form-row">
+                <label class="col-xs-3">帳號</label>
+                <div class="col-xs-9">
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control" ng-model="userName" name="name">
+                    </div>
+                </div>
+            </div>            
+            <div class="form-row">
+                <label class="col-xs-3">密碼</label>
+                <div class="col-xs-9">
+                    <div class="input-group col-xs-12">
+                        <input type="password" class="form-control" ng-model="password" name="password">
+                    </div>
+                </div>
+            </div>            
+        </div>
+        <div class="panel-footer text-right">
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary" ng-click="userLogin()"ng-disabled="isLoading">
+                    <i class='fa fa-spinner fa-spin' ng-if="isLoading"></i>登入
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
