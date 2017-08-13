@@ -29,11 +29,11 @@
                 <tr ng-repeat="singleDivision in jobDivision.list">
                     <td>
                         <div ng-if="jobDivision.subType.length===1">{{singleDivision.subType.name}}</div>
-                        <div class="btn-group" dropdown is-open="singleDivision.menuOpen.subType" ng-if="jobDivision.subType.length>1">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <div class="btn-group" uib-dropdown is-open="singleDivision.menuOpen.subType" ng-if="jobDivision.subType.length>1">
+                            <button type="button" class="btn btn-default" uib-dropdown-toggle>
                                 {{singleDivision.subType.name}} <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu" uib-dropdown-menu>
                                 <li bindonce ng-repeat="subType in jobDivision.subType">
                                     <a ng-click="setSubType(subType,singleDivision)">{{ subType.name }}</a>
                                 </li>
@@ -42,11 +42,11 @@
                     </td>
                     <td>
                         <div class="form-row">
-                            <div class="btn-group" dropdown is-open="singleDivision.menuOpen.company">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <div class="btn-group" uib-dropdown is-open="singleDivision.menuOpen.company">
+                                <button type="button" class="btn btn-default" uib-dropdown-toggle>
                                     {{singleDivision.company.name}} <span class="caret"></span>
                                 </button>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu" uib-dropdown-menu>
                                     <li bindonce ng-repeat="company in companyCatList[jobDivision.type][singleDivision.subType.id]">
                                         <a ng-click="setCompany(company,singleDivision)">{{ company.name }}</a>
                                     </li>
@@ -132,12 +132,12 @@
                         </div>
                     </td>
                     <td>
-                        <div class="btn-group" dropdown is-open="singleDivision.menuOpen.selectedCompany">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-class="{'btn-danger':!checkSelectedCompany(singleDivision.nextStep)}">
+                        <div class="btn-group" uib-dropdown is-open="singleDivision.menuOpen.selectedCompany">
+                            <button type="button" class="btn btn-default" uib-dropdown-toggle ng-class="{'btn-danger':!checkSelectedCompany(singleDivision.nextStep)}">
                                 {{singleDivision.nextStep.name}}
                                 <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu" uib-dropdown-menu>
                                 <li bindonce ng-repeat="selectedCompany in companySelectedList">
                                     <a ng-click="setNextCompany(selectedCompany,singleDivision)" ng-disabled="selectedCompany.id===singleDivision.company.id">
                                         {{ selectedCompany.name }}

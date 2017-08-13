@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const PreloadWebpackPlugin = require('preload-webpack-plugin');
 
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const extractSass = new ExtractTextPlugin({
@@ -28,6 +29,7 @@ module.exports = {
     },
     devServer: {
         inline: true,
+        https: true,
         public:'0.0.0.0:3000',
         port: 3000,
     },
@@ -90,18 +92,19 @@ module.exports = {
       ]
     },
     plugins: [
-        new HtmlWebpackPlugin(
-          {
-            title : 'ERP system',
-            template: 'index.ejs'
+      new HtmlWebpackPlugin(
+        {
+          title : 'ERP system',
+          template: 'index.ejs'
+        }
+      ),
+      new PreloadWebpackPlugin(),
+      new webpack.optimize.CommonsChunkPlugin(
+          { 
+            name: 'vendor', 
+            filename: 'vendor.js' 
           }
         ),
-        new webpack.optimize.CommonsChunkPlugin(
-            { 
-              name: 'vendor', 
-              filename: 'vendor.js' 
-            }
-          ),
-        extractSass
+      extractSass
     ]
 };

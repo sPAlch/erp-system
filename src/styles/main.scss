@@ -3,6 +3,11 @@ $icon-font-path: "../../node_modules/bootstrap-sass/assets/fonts/bootstrap/";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
 @import "~angular-ui-bootstrap/dist/ui-bootstrap-csp";
 
+$fa-font-path:"../../node_modules/font-awesome/fonts";
+@import "../../node_modules/font-awesome/scss/font-awesome";
+
+//@import "/font-awesome/scss/font-awesome.scss";
+
 body{
   padding:52px 0px 36px 0px;
   height:100%;

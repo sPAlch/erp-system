@@ -8,7 +8,7 @@
  * Controller of the erpProjApp
  */
 angular.module('erpProjApp')
-  .controller('BillCtrl', ['$scope', '$modal', 'httpService',function ($scope, $modal, httpService) {
+  .controller('BillCtrl', ['$scope', 'httpService',function ($scope, httpService) {
 
     var selectedPayNo = 0;
 

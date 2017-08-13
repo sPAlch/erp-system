@@ -19,14 +19,11 @@ angular
     ngRoute,
     ngTouch,
     ngAnimate,
-	accordion,
-	datepicker,
-	dropdown,
-	modal,
     'ui.bootstrap',
     'ngStorage'
   ])
-  .config(function ($routeProvider) {
+  .config(['$routeProvider','$locationProvider',function ($routeProvider,$locationProvider) {
+  	$locationProvider.hashPrefix('');
     $routeProvider
 		.when('/', {
 			template: require('./views/job.html'),
@@ -66,8 +63,8 @@ angular
 	    .otherwise({
     	    redirectTo: '/'
       	});
-  });
+  }]);
 
-require('./controllers');
-require('./directives');
 require('./services');
+require('./directives');
+require('./controllers');

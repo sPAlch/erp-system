@@ -143,11 +143,10 @@ angular.module('erpProjApp')
     $scope.deleteVendor = function(){
         var modalInstance = $uibModal.open({
                 template: require('../views/deleteConfirm.html'),
-//                templateUrl: 'views/deleteConfirm.html',
                 controller: 'DeleteConfirmCtrl',
                 size: 'sm',
                 resolve: {
-                    params: function(){                        
+                    items: function(){                        
                         return true;
                     }
                 }

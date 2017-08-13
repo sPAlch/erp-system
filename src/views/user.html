@@ -55,12 +55,12 @@
                 </div>
                 <div class="col-xs-2">
                     <label class="label-text">類別</label>
-                    <div class="btn-group" dropdown is-open="userCategory.isOpen">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-click="openMenu($event)">
+                    <div class="btn-group" uib-dropdown is-open="userCategory.isOpen">
+                        <button type="button" class="btn btn-default" uib-dropdown-toggle data-toggle="dropdown" ng-click="openMenu($event)">
                             {{selectedUser.cat.label}}
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" uib-dropdown-menu>
                             <li bindonce ng-repeat="cat in userCategory.list">
                                 <a ng-click="setCat(cat)">
                                     {{ cat.label }}

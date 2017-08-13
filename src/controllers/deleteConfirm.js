@@ -8,14 +8,14 @@
  * Controller of the erpProjApp
  */
 angular.module('erpProjApp')
-  .controller('DeleteConfirmCtrl', ['$scope', '$modalInstance', 'params' ,function ($scope, $modalInstance, params) {
+  .controller('DeleteConfirmCtrl', ['$scope', '$uibModalInstance', 'items' ,function ($scope, $uibModalInstance, items) {
 
     $scope.delete = function(){
-      $modalInstance.close(true);
+      $uibModalInstance.close(true);
     };
 
     $scope.keep = function () {
-      $modalInstance.dismiss('cancel');
+      $uibModalInstance.dismiss('cancel');
     };
 
   }]);

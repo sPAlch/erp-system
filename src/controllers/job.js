@@ -821,7 +821,7 @@ angular.module('erpProjApp')
       httpService.sendRequest('getJobList', {params : params})
             .then(function(data){
                 $scope.isLoading = false;
-                $scope.pageSetting.totalCount = data.info[0].total;
+                $scope.pageSetting.totalCount = data.info ? data.info[0].total : 0;
                 $scope.jobList = [];
                 _.each(data.data,function(singleJob,i){
                   if(typeof singleJob === "object"){
